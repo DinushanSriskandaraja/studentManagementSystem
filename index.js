@@ -1,42 +1,78 @@
 var express = require('express');
 var app = express();
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+app.use(express.json());
+// const express = require('express');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
+
+// const app = express();
+const port = 8080;
+
+const uri = "mongodb+srv://dinu:dinushan@cluster0.hqhawtk.mongodb.net/?retryWrites=true&w=majority";
+
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
 });
-app.get('/addStudent', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+// Get all students
+app.get('/students', async(req, res) => {
+    try {
+        await client.connect();
+        const collection = client.db("sms").collection("students");
+
+        const students = await collection.find().toArray();
+        res.json(students);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
 });
-app.get('/student', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+
+// Get Student By SID
+
+app.get('/student/:sid', async(req, res) => {
+    console.log(parseInt(req.params.sid));
+    try {
+        await client.connect();
+        // console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const students = await collection.findOne({ SID: parseInt(req.params.sid) });
+        if (students) {
+            res.json(students);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
 });
-app.get('/student:id', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+// Add a new student
+app.post('/students', async(req, res) => {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const result = await collection.insertOne(req.body);
+        // Use index 0 to get the inserted document
+        if (result && result.ops && result.ops.length > 0) {
+            res.json(result.ops[0]);
+        } else {
+            res.status(500).json({ message: "Unexpected response from the database" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        // await client.close();
+    }
 });
-app.get('/student:fName', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.get('/student:lName', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.get('/student:mail', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.get('/student:mail', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.get('/student:course', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.get('/student:guardian', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.put('/student:id', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.put('/student:fName', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
-app.delete('/student:id', function(req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
-});
+
 app.listen(8080);
