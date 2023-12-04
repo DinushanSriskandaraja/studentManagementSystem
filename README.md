@@ -1,1 +1,4 @@
 # studentManagementSystem
+```bash
+npm install 
+```
