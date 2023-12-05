@@ -1,21 +1,36 @@
 
 # Student Management System
 
-This is a webste to manage student details.
+Welcome to the Student Management System, a web application designed to efficiently manage student details.
 
-## Deployment
+## Tech Stack
 
-Deploy this project and manage your students details
+**Client:** HTML, Bootstrap, jQuery, Ajex
 
-### Install dependencies in one command
+**Server:** ExprexxJs, MongoDB
+
+
+## Installation
+
+Install my-project with npm
+
+#### Installing Dependencies
+- Create an account on [mongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
+- install MongoDB Compass on [mongoDB](https://downloads.mongodb.com/compass/mongodb-compass-1.40.4-win32-x64.exe)
+- Install [Node](https://nodejs.org/en/download)
+- Install npm
+```bash 
+npm install -g npm
+```
+- Install dependencies in one command
 ```bash
   npm install
 ```
-### Run the project
+- Run the project
 ```bash
   node index
 ```
-### Install dependencies
+### Install dependencies separately (if needed)
 expressJs middleware to save a lot of time
 ```bash
   npm install express --save
@@ -32,11 +47,125 @@ to enable CORS with various options
 ```bash
   npm install cors --save
 ```
-## Tech Stack
+## Run Locally
 
-**Client:** HTML, Bootstrap, jQuery, Ajex
+Clone the project
 
-**Server:** ExprexxJs, MongoDB
+```bash
+  git clone https://github.com/SriDinu/studentManagementSystem
+```
+
+Go to the project directory
+
+```bash
+  cd studentManagementSystem
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run start
+```
+
+
+
+## API Reference
+
+#### Get all students details
+
+```http
+  GET /students/
+```
+
+| Parameter | Type     |
+| :-------- | :------- | 
+| `api_key` | `string` |
+
+#### Get student by SID
+
+```http
+  GET /student/sid/${sid}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `sid`      | `int` | **Required**. SID of Student  |
+
+#### Get student by email
+
+```http
+  GET /student/email/${email}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `email`      | `string` | **Required**. email of Student  |
+
+#### Get student by first name
+
+```http
+  GET /student/fname/${fname}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `fname`      | `string` | **Required**. FirstName of Student  |
+
+#### Get student by last name
+
+```http
+  GET /student/lname/${lname}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `lname`      | `string` | **Required**. LastName of Student  |
+
+#### Get student by nearest city
+
+```http
+  GET /student/city/${city}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `city`      | `string` | **Required**. Nearest City of Student  |
+
+#### Add new student
+
+```http
+  POST /students/
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `Form Data`      | `string` | **Required**. Form Data of Student  |
+
+#### Update student details
+
+```http
+  PUT /student/sid/${SID}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `SID`      | `int` | **Required**. SID of Student  |
+
+#### Delete student
+
+```http
+  DELETE /student/sid/${SID}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `SID`      | `int` | **Required**. SID of Student  |
 
 
 ## Authors
