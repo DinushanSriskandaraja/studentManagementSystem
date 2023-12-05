@@ -1,0 +1,26 @@
+ Front-End Developers 
+ Don't Change
+ This File 
+
+
+GET REQUEST
+    Get all students
+    'localhost:8080/students'
+    Get student by SID
+    'localhost:8080/student/sid/{:sid}'
+    Get student by email
+    'localhost:8080/student/email/{:email}'
+    Get student by first name
+    'localhost:8080/student/fname/{:lname}'
+    Get student by last name
+    'localhost:8080/student/lname/{:lname}'
+    Get Student By City
+    'localhost:8080/student/city/{New%20York}'
+
+POST REQUEST
+    New Student
+    'localhost:8080/students'
+
+PUT REQEST 
+    update student by SID
+    'localhost:8080/students/sid/:sid'

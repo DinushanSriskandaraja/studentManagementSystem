@@ -1,3 +1,9 @@
+// Front-End Developers 
+// Don't Touch
+// This Code File 
+
+
+
 var express = require('express');
 var app = express();
 app.use(express.json());
@@ -34,8 +40,7 @@ app.get('/students', async(req, res) => {
 });
 
 // Get Student By SID
-
-app.get('/student/:sid', async(req, res) => {
+app.get('/student/sid/:sid', async(req, res) => {
     console.log(parseInt(req.params.sid));
     try {
         await client.connect();
@@ -54,6 +59,87 @@ app.get('/student/:sid', async(req, res) => {
         await client.close();
     }
 });
+// Get Student By email
+app.get('/student/email/:email', async(req, res) => {
+
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const students = await collection.findOne({ Email: req.params.email });
+        if (students) {
+            res.json(students);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
+// Get Student By FirstName
+app.get('/student/fName/:fname', async(req, res) => {
+
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const students = await collection.find({ FirstName: req.params.fname }).toArray();
+        if (students) {
+            res.json(students);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
+// Get Student By lastName
+app.get('/student/lName/:lname', async(req, res) => {
+
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const students = await collection.find({ LastName: req.params.lname }).toArray();
+        if (students.length > 0) {
+            res.json(students);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
+// Get Student By City
+app.get('/student/city/:city', async(req, res) => {
+
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const students = await collection.find({ NearCity: req.params.city }).toArray();
+        if (students.length > 0) {
+            res.json(students);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
+
 // Add a new student
 app.post('/students', async(req, res) => {
     try {
@@ -74,5 +160,53 @@ app.post('/students', async(req, res) => {
         // await client.close();
     }
 });
+// Update Student By SID
+app.put('/student/sid/:sid', async(req, res) => {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const updatedStudent = await collection.findOne({ SID: parseInt(req.params.sid) });
+        console.log(updatedStudent);
+
+        // Assuming req.body contains the updated data
+        const updatedData = req.body;
+        console.log(updatedData);
+        const result = await collection.updateOne({ SID: parseInt(req.params.sid) }, { $set: updatedData });
+
+        if (result.modifiedCount > 0) {
+            res.json({ message: "Student updated successfully" });
+        } else {
+            res.status(404).json({ message: "Student not found or no changes were made" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
+// Delete Student By SID
+app.delete('/student/sid/:sid', async(req, res) => {
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+
+        const result = await collection.deleteOne({ SID: parseInt(req.params.sid) });
+
+        if (result.deletedCount > 0) {
+            res.json({ message: "Student deleted successfully" });
+        } else {
+            res.status(404).json({ message: "Student not found or no changes were made" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
+
 
 app.listen(8080);
