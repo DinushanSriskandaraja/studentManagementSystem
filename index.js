@@ -23,6 +23,10 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+// Define your routes
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + "/" + "index.html");
+});
 // Get all students
 app.get('/students', async(req, res) => {
     try {
