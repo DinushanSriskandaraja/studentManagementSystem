@@ -70,7 +70,7 @@ Install dependencies
 Start the server
 
 ```bash
-  npm run start
+  node {fileName}
 ```
 
 
