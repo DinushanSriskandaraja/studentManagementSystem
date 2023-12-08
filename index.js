@@ -44,7 +44,7 @@ app.get('/students', async(req, res) => {
 });
 
 // Get Student By SID
-app.get('/student/sid/:sid', async(req, res) => {
+app.get('/student/SID/:sid', async(req, res) => {
     console.log(parseInt(req.params.sid));
     try {
         await client.connect();
@@ -64,7 +64,7 @@ app.get('/student/sid/:sid', async(req, res) => {
     }
 });
 // Get Student By email
-app.get('/student/email/:email', async(req, res) => {
+app.get('/student/Email/:email', async(req, res) => {
 
     try {
         await client.connect();
@@ -84,7 +84,7 @@ app.get('/student/email/:email', async(req, res) => {
     }
 });
 // Get Student By FirstName
-app.get('/student/fName/:fname', async(req, res) => {
+app.get('/student/FirstName/:fname', async(req, res) => {
 
     try {
         await client.connect();
@@ -104,7 +104,7 @@ app.get('/student/fName/:fname', async(req, res) => {
     }
 });
 // Get Student By lastName
-app.get('/student/lName/:lname', async(req, res) => {
+app.get('/student/LastName/:lname', async(req, res) => {
 
     try {
         await client.connect();
@@ -124,7 +124,7 @@ app.get('/student/lName/:lname', async(req, res) => {
     }
 });
 // Get Student By City
-app.get('/student/city/:city', async(req, res) => {
+app.get('/student/NearCity/:city', async(req, res) => {
 
     try {
         await client.connect();
@@ -159,7 +159,7 @@ app.post('/students', async(req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message: "Internal Server Error", error });
     } finally {
         // await client.close();
     }

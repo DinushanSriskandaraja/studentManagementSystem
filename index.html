@@ -125,49 +125,46 @@
 
                         <tr>
                             <td>
-                                <input type="text" class="form-control" placeholder="SID" />
+                                <input type="text" id="sid" class="form-control" placeholder="SID" />
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="First Name" />
+                                <input type="text" id="firstName" class="form-control" placeholder="First Name" />
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="Last Name" />
+                                <input type="text" id="LastName" class="form-control" placeholder="Last Name" />
                             </td>
                             <td>
-                                <input type="email" class="form-control" placeholder="Email" />
+                                <input type="email" id="Email" class="form-control" placeholder="Email" />
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="Nearest City" />
+                                <input type="text" id="NearestCity" class="form-control" placeholder="Nearest City" />
                             </td>
                             <td>
-                                <select class="form-control">
-                                    <option value="">Select Course</option>
-                                    <option value="computer-science">Computer Science</option>
-                                    <option value="information-technology">Information Technology</option>
-                                    <option value="business-administration">Business Administration</option>
+                                <select class="form-control" id="Course">
+                                    <option>Select Course</option>
+                                    <option value="Foundation">Foundation</option>
+                                    <option value="HND">HND</option>
+                                    <option value="Degree">Degree</option>
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control">
-                                    <option>Select Subject</option>
-                                    <option>IP</option>
-                                    <option>OOP</option>
-                                    <option>SE</option>
-                                    <option>MC</option>
-                                    <option>DCCN</option>
-                                    <option>DBMS</option>
-                                    <option>ETF</option>
-                                    <option>WAD</option>
-                                    <option>BE</option>
-                                    <option>FC</option>
+                                <!-- Example Subjects selection box -->
+                                <select id="Subject" class="form-control">
+                                    <option value="ETF">ETF</option>
+                                    <option value="ORDBMS">ORDBMS</option>
+                                    <option value="OOP">OOP</option>
+                                    <option value="SE">SE</option>
+                                    <option value="HCI">HCI</option>
+                                    <option value="IP">IP</option>
                                 </select>
+
                             </td>
                             <td>
-                                <input type="text" class="form-control" placeholder="Guardian" />
+                                <input type="text" class="form-control" placeholder="Guardian" id="Guardian" name="Guardian" />
                             </td>
                             <td>
-                              <button type="button" class="btn btn-primary" onclick="searchStudents()">Search</button>
-                              <button type="button" class="btn btn-primary" onclick="addStudent()">ADD</button>
+                                <button type="button" class="btn btn-primary" onclick="searchStudents()">Search</button>
+                                <button type="button" class="btn btn-primary" onclick="addStudent()">ADD</button>
 
 
                             </td>
@@ -218,7 +215,7 @@
                 <td>${student.Email}</td>
                 <td>${student.NearestCity}</td>
                 <td>${student.Course}</td>
-                <td>${student.Subject}</td>
+                <td>${student.Subjects}</td>
                 <td>${student.Guardian}</td>
                 <td>
                   <button type="button" class="btn btn-warning" onclick="editStudent(${student.SID})">EDIT</button>
@@ -239,70 +236,82 @@
 
         // Function to search students
         function searchStudents() {
-          const searchValue = $('#search-input').val(); // Assuming you have an input field with id 'search-input'
+            // Iterate over input fields to find filled ones
+            $('#student-table input, #student-table select').each(function() {
+                const inputValue = $(this).val();
+                const inputName = $(this).attr('name');
 
-          // Make an Ajax request to fetch students with the given search value
-          $.ajax({
-              url: 'http://localhost:8080/students', // Update the URL with your server's address
-              method: 'GET',
-              dataType: 'json',
-              data: { search: searchValue }, // Pass the search value as a query parameter
-              success: function(students) {
-                  // Call a function to display the searched students on the page
-                  displayStudents(students);
-              },
-              error: function(error) {
-                  console.error('Error fetching searched data:', error);
-              }
-          });
+                // Check if the input has a value
+                if (inputValue) {
+                    // Make an Ajax request to search students for this specific input
+                    $.ajax({
+                        url: `http://localhost:8080/student/${inputName}/${inputValue}`,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(result) {
+                            // Call a function to display the search results
+                            displayStudents(result);
+                        },
+                        error: function(error) {
+                            console.error(`Error searching for students with ${inputName}=${inputValue}:`, error);
+                        }
+                    });
+                }
+            });
         }
-
-        // Function to add a new student
-        function searchStudents() {
-          const searchValue = $('#search-input').val(); // Assuming you have an input field with id 'search-input'
-
-          // Make an Ajax request to fetch students with the given search value
-          $.ajax({
-              url: 'http://localhost:8080/students', // Update the URL with your server's address
-              method: 'GET',
-              dataType: 'json',
-              data: { search: searchValue }, // Pass the search value as a query parameter
-              success: function(students) {
-                  // Call a function to display the searched students on the page
-                  displayStudents(students);
-              },
-              error: function(error) {
-                  console.error('Error fetching searched data:', error);
-              }
-          });
-        }
-
-        // Function to edit a student
-        function editStudent(sid) {
-            // Implement your logic for editing a student
-            // You may need to fetch the specific student details for editing
-        }
-
         // Function to delete a student
         function deleteStudent(sid) {
             // Confirm the deletion with the user
             const confirmDelete = confirm('Are you sure you want to delete this student?');
+            if (!confirmDelete) {
 
-            if (confirmDelete) {
-                // Make an Ajax request to delete the student
-                $.ajax({
-                    url: `http://localhost:8080/students/${sid}`, // Update the URL with your server's address
-                    method: 'DELETE',
-                    success: function (response) {
-                        // Refresh the student table after deletion
-                        fetchStudents();
-                    },
-                    error: function (error) {
-                        console.error('Error deleting student:', error);
-                    }
-                });
+                return;
             }
-      	}
+            // Make an Ajax request to delete the student
+            $.ajax({
+                url: `http://localhost:8080/student/sid/${sid}`,
+                method: 'DELETE',
+                success: function(response) {
+                    console.log('Student deleted successfully:', response);
+                    fetchStudents();
+                },
+                error: function(error) {
+                    console.error('Error deleting student:', error);
+                    alert('Error deleting student. Please try again.');
+                }
+            });
+        }
+
+        // Function to add a new student
+        function addStudent() {
+            // Create a JSON object with the desired structure
+            const studentData = {
+                SID: parseInt($('#sid').val()),
+                FirstName: $('#firstName').val(),
+                // Add other properties here based on your form fields
+                LastName: $('#LastName').val(),
+                Email: $('#Email').val(),
+                NearestCity: $('#NearestCity').val(),
+                Course: [$('#Course').val()], // Get the selected value from the Course dropdown
+                Guardian: $('#Guardian').val(),
+                Subjects: [$('#Subject').val()],
+            };
+
+            // Make an AJAX request to add a new student
+            $.ajax({
+                url: 'http://localhost:8080/students',
+                method: 'POST',
+                contentType: 'application/json', // Specify the content type
+                data: JSON.stringify(studentData), // Convert the object to a JSON string
+                success: function(response) {
+                    console.log('Student added successfully:', response);
+                    // Optionally, you can update the UI or perform other actions after adding a student
+                },
+                error: function(error) {
+                    console.error('Error adding student:', error);
+                }
+            });
+        }
     </script>
 </body>
 
