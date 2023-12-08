@@ -263,12 +263,13 @@
                     if (inputId !== 'Course' && inputId !== 'Subject') {
                         // Check if the input has a value
                         if (inputValue) {
+                            const searchValue = (inputId === 'SID') ? parseInt(inputValue) : inputValue;
                             // Set the flag to true to indicate that a filled input has been found
                             inputFound = true;
 
                             // Make an Ajax request to search students for this specific input
                             $.ajax({
-                                url: `http:/student/${inputId}/${inputValue}`,
+                                url: `http:/student/${inputId}/${searchValue}`,
                                 method: 'GET',
                                 dataType: 'json',
                                 success: function(result) {
@@ -374,7 +375,7 @@
         function updateStudent(sid) {
             const studentData = {
                 SID: parseInt(sid),
-                FirstName: $('#firstNameInput').val(),
+                FirstName: $('#FirstName').val(),
                 // Add other properties here based on your form fields
                 NearCity: $('#NearCity').val(),
                 Course: [$('#Course').val()], // Assuming "Course" is a single select dropdown
@@ -417,8 +418,8 @@
         }
 
         function populateEditForm(student) {
-            $('#sid').val(student.SID);
-            $('#firstName').val(student.FirstName);
+            $('#SID').val(student.SID);
+            $('#FirstName').val(student.FirstName);
             $('#LastName').val(student.LastName);
             $('#Email').val(student.Email);
             // Populate other form fields based on your data model
