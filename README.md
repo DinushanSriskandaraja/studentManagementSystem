@@ -14,7 +14,7 @@ Welcome to the Student Management System, a web application designed to efficien
 
 Install my-project with npm
 
-#### Installing Dependencies
+#### Pre_requirement to Develop 
 - Create an account on [mongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
 - install MongoDB Compass on [mongoDB](https://downloads.mongodb.com/compass/mongodb-compass-1.40.4-win32-x64.exe)
 - Install [Node](https://nodejs.org/en/download)
@@ -22,14 +22,7 @@ Install my-project with npm
 ```bash 
 npm install -g npm
 ```
-- Install dependencies in one command
-```bash
-  npm install
-```
-- Run the project
-```bash
-  node index
-```
+
 ### Install dependencies separately (if needed)
 expressJs middleware to save a lot of time
 ```bash
@@ -70,7 +63,7 @@ Install dependencies
 Start the server
 
 ```bash
-  node {fileName}
+  npm start
 ```
 
 
@@ -90,7 +83,7 @@ Start the server
 #### Get student by SID
 
 ```http
-  GET /student/sid/${sid}
+  GET /student/SID/${sid}
 ```
 
 | Parameter | Type     | Description                       |
@@ -100,7 +93,7 @@ Start the server
 #### Get student by email
 
 ```http
-  GET /student/email/${email}
+  GET /student/Email/${email}
 ```
 
 | Parameter | Type     | Description                       |
@@ -110,7 +103,7 @@ Start the server
 #### Get student by first name
 
 ```http
-  GET /student/fname/${fname}
+  GET /student/FirstName/${fname}
 ```
 
 | Parameter | Type     | Description                       |
@@ -120,7 +113,7 @@ Start the server
 #### Get student by last name
 
 ```http
-  GET /student/lname/${lname}
+  GET /student/LastName/${lname}
 ```
 
 | Parameter | Type     | Description                       |
@@ -130,7 +123,7 @@ Start the server
 #### Get student by nearest city
 
 ```http
-  GET /student/city/${city}
+  GET /student/NearCity/${city}
 ```
 
 | Parameter | Type     | Description                       |
