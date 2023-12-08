@@ -63,6 +63,26 @@ app.get('/student/SID/:sid', async(req, res) => {
         await client.close();
     }
 });
+// Get Student By Gurdian
+app.get('/student/Gurdian/:Gurdian', async(req, res) => {
+    console.log(parseInt(req.params.Gurdian));
+    try {
+        await client.connect();
+        // console.log("Connected to MongoDB");
+        const collection = client.db("sms").collection("students");
+        const students = await collection.findOne({ SID: parseInt(req.params.Gurdian) });
+        if (students) {
+            res.json(students);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        await client.close();
+    }
+});
 // Get Student By email
 app.get('/student/Email/:email', async(req, res) => {
 

@@ -125,10 +125,10 @@
 
                         <tr>
                             <td>
-                                <input type="text" id="sid" class="form-control" placeholder="SID" />
+                                <input type="text" id="SID" class="form-control" placeholder="SID" />
                             </td>
                             <td>
-                                <input type="text" id="firstName" class="form-control" placeholder="First Name" />
+                                <input type="text" id="FirstName" class="form-control" placeholder="First Name" />
                             </td>
                             <td>
                                 <input type="text" id="LastName" class="form-control" placeholder="Last Name" />
@@ -137,26 +137,27 @@
                                 <input type="email" id="Email" class="form-control" placeholder="Email" />
                             </td>
                             <td>
-                                <input type="text" id="NearestCity" class="form-control" placeholder="Nearest City" />
+                                <input type="text" id="NearCity" name="NearCity" class="form-control" placeholder="Nearest City" />
                             </td>
                             <td>
                                 <select class="form-control" id="Course">
-                                    <option>Select Course</option>
-                                    <option value="Foundation">Foundation</option>
-                                    <option value="HND">HND</option>
-                                    <option value="Degree">Degree</option>
-                                </select>
+                                        <option >Select Course</option>
+                                        <option value="Foundation">Foundation</option>
+                                        <option value="HND">HND</option>
+                                        <option value="Degree">Degree</option>
+                                    </select>
                             </td>
                             <td>
                                 <!-- Example Subjects selection box -->
                                 <select id="Subject" class="form-control">
-                                    <option value="ETF">ETF</option>
-                                    <option value="ORDBMS">ORDBMS</option>
-                                    <option value="OOP">OOP</option>
-                                    <option value="SE">SE</option>
-                                    <option value="HCI">HCI</option>
-                                    <option value="IP">IP</option>
-                                </select>
+                                        <option>Select Course</option>
+                                        <option value="ETF">ETF</option>
+                                        <option value="ORDBMS">ORDBMS</option>
+                                        <option value="OOP">OOP</option>
+                                        <option value="SE">SE</option>
+                                        <option value="HCI">HCI</option>
+                                        <option value="IP">IP</option>
+                                    </select>
 
                             </td>
                             <td>
@@ -164,7 +165,7 @@
                             </td>
                             <td>
                                 <button type="button" class="btn btn-primary" onclick="searchStudents()">Search</button>
-                                <button type="button" class="btn btn-primary" onclick="addStudent()">ADD</button>
+                                <button type="button" class="btn btn-primary" onclick="addOrUpdateStudent()" id="addOrUpdateBtn"></button>
 
 
                             </td>
@@ -213,7 +214,7 @@
                 <td>${student.FirstName}</td>
                 <td>${student.LastName}</td>
                 <td>${student.Email}</td>
-                <td>${student.NearestCity}</td>
+                <td>${student.NearCity}</td>
                 <td>${student.Course}</td>
                 <td>${student.Subjects}</td>
                 <td>${student.Guardian}</td>
@@ -232,33 +233,62 @@
         // Call the fetchStudents function when the page loads
         $(document).ready(function() {
             fetchStudents();
+            updateButtonLabel();
         });
+
+        function updateButtonLabel() {
+            const sid = $('#SID').val();
+            const addButton = $('#addOrUpdateBtn');
+
+            if (sid) {
+                addButton.text('UPDATE');
+            } else {
+                addButton.text('ADD');
+            }
+        }
 
         // Function to search students
         function searchStudents() {
+            // Flag to indicate if a filled input has been found
+            let inputFound = false;
+
             // Iterate over input fields to find filled ones
             $('#student-table input, #student-table select').each(function() {
-                const inputValue = $(this).val();
-                const inputName = $(this).attr('name');
+                // Check if an input has already been found
+                if (!inputFound) {
+                    const inputValue = $(this).val();
+                    const inputId = $(this).attr('id');
 
-                // Check if the input has a value
-                if (inputValue) {
-                    // Make an Ajax request to search students for this specific input
-                    $.ajax({
-                        url: `http://localhost:8080/student/${inputName}/${inputValue}`,
-                        method: 'GET',
-                        dataType: 'json',
-                        success: function(result) {
-                            // Call a function to display the search results
-                            displayStudents(result);
-                        },
-                        error: function(error) {
-                            console.error(`Error searching for students with ${inputName}=${inputValue}:`, error);
+                    // Exclude specific fields from the search (e.g., Course and Subject)
+                    if (inputId !== 'Course' && inputId !== 'Subject') {
+                        // Check if the input has a value
+                        if (inputValue) {
+                            // Set the flag to true to indicate that a filled input has been found
+                            inputFound = true;
+
+                            // Make an Ajax request to search students for this specific input
+                            $.ajax({
+                                url: `http:/student/${inputId}/${inputValue}`,
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(result) {
+                                    // Call a function to display the search results
+                                    displayStudents(result);
+                                },
+                                error: function(error) {
+                                    console.error(`Error searching for students with ${inputId}=${inputValue}:`, error);
+                                }
+                            });
                         }
-                    });
+                    }
                 }
             });
         }
+
+
+
+
+
         // Function to delete a student
         function deleteStudent(sid) {
             // Confirm the deletion with the user
@@ -291,7 +321,7 @@
                 // Add other properties here based on your form fields
                 LastName: $('#LastName').val(),
                 Email: $('#Email').val(),
-                NearestCity: $('#NearestCity').val(),
+                NearCity: $('#NearCity').val(),
                 Course: [$('#Course').val()], // Get the selected value from the Course dropdown
                 Guardian: $('#Guardian').val(),
                 Subjects: [$('#Subject').val()],
@@ -311,6 +341,95 @@
                     console.error('Error adding student:', error);
                 }
             });
+        }
+
+        function editStudent(sid) {
+            // Fetch student details by SID
+            $.ajax({
+                url: `http://localhost:8080/students/${sid}`,
+                method: 'GET',
+                dataType: 'json',
+                success: function(student) {
+                    // Populate the edit form with student details
+                    populateEditForm(student);
+                },
+                error: function(error) {
+                    console.error('Error fetching student details:', error);
+                }
+            });
+        }
+
+        function addOrUpdateStudent() {
+            const sid = $('#sid').val();
+
+            if (sid) {
+                // If SID exists, update the student
+                updateStudent(sid);
+            } else {
+                // If SID doesn't exist, add a new student
+                addStudent();
+            }
+        }
+
+        function updateStudent(sid) {
+            const studentData = {
+                SID: parseInt(sid),
+                FirstName: $('#firstNameInput').val(),
+                // Add other properties here based on your form fields
+                NearCity: $('#NearCity').val(),
+                Course: [$('#Course').val()], // Assuming "Course" is a single select dropdown
+                Guardian: $('#Guardian').val(),
+                Subjects: [$('#Subject').val()], // Assuming "Subject" is a single select dropdown
+            };
+
+            // Make an AJAX request to update the student
+            $.ajax({
+                url: `http://localhost:8080/student/sid/${sid}`,
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(studentData),
+                success: function(response) {
+                    console.log('Student updated successfully:', response);
+                    // Optionally, you can update the UI or perform other actions after updating a student
+                    fetchStudents(); // Refresh the student table
+                    //clearForm(); // Clear the form after update
+                },
+                error: function(error) {
+                    console.error('Error updating student:', error);
+                }
+            });
+        }
+
+        function editStudent(sid) {
+            // Fetch student details by SID
+            $.ajax({
+                url: `http://localhost:8080/student/sid/${sid}`,
+                method: 'GET',
+                dataType: 'json',
+                success: function(student) {
+                    // Populate the edit form with student details
+                    populateEditForm(student);
+                },
+                error: function(error) {
+                    console.error('Error fetching student details:', error);
+                }
+            });
+        }
+
+        function populateEditForm(student) {
+            $('#sid').val(student.SID);
+            $('#firstName').val(student.FirstName);
+            $('#LastName').val(student.LastName);
+            $('#Email').val(student.Email);
+            // Populate other form fields based on your data model
+            // Assuming "Course" is a single select dropdown
+            $('#Course').val(student.Course[0]);
+
+            // Assuming "Subject" is a single select dropdown
+            $('#Subject').val(student.Subjects[0]);
+
+            $('#NearCity').val(student.NearCity);
+            $('#Guardian').val(student.Guardian);
         }
     </script>
 </body>
