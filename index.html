@@ -166,8 +166,8 @@
                                 <input type="text" class="form-control" placeholder="Guardian" />
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary">Search</button>
-                                <button type="button" class="btn btn-primary">ADD</button>
+                              <button type="button" class="btn btn-primary" onclick="searchStudents()">Search</button>
+                              <button type="button" class="btn btn-primary" onclick="addStudent()">ADD</button>
 
 
                             </td>
@@ -221,8 +221,9 @@
                 <td>${student.Subject}</td>
                 <td>${student.Guardian}</td>
                 <td>
-                    <button type="button" class="btn btn-warning" onclick="editStudent(${student.SID})">EDIT</button>
-                    <button type="button" class="btn btn-danger" onclick="deleteStudent(${student.SID})">DELETE</button>
+                  <button type="button" class="btn btn-warning" onclick="editStudent(${student.SID})">EDIT</button>
+                  <button type="button" class="btn btn-danger" onclick="deleteStudent(${student.SID})">DELETE</button>
+                    
                 </td>
             </tr>
         `);
@@ -238,13 +239,42 @@
 
         // Function to search students
         function searchStudents() {
-            // Implement your search logic here
-            // You may need to modify the fetchStudents function to accept search parameters
+          const searchValue = $('#search-input').val(); // Assuming you have an input field with id 'search-input'
+
+          // Make an Ajax request to fetch students with the given search value
+          $.ajax({
+              url: 'http://localhost:8080/students', // Update the URL with your server's address
+              method: 'GET',
+              dataType: 'json',
+              data: { search: searchValue }, // Pass the search value as a query parameter
+              success: function(students) {
+                  // Call a function to display the searched students on the page
+                  displayStudents(students);
+              },
+              error: function(error) {
+                  console.error('Error fetching searched data:', error);
+              }
+          });
         }
 
         // Function to add a new student
-        function addStudent() {
-            // Implement your logic for adding a new student
+        function searchStudents() {
+          const searchValue = $('#search-input').val(); // Assuming you have an input field with id 'search-input'
+
+          // Make an Ajax request to fetch students with the given search value
+          $.ajax({
+              url: 'http://localhost:8080/students', // Update the URL with your server's address
+              method: 'GET',
+              dataType: 'json',
+              data: { search: searchValue }, // Pass the search value as a query parameter
+              success: function(students) {
+                  // Call a function to display the searched students on the page
+                  displayStudents(students);
+              },
+              error: function(error) {
+                  console.error('Error fetching searched data:', error);
+              }
+          });
         }
 
         // Function to edit a student
@@ -255,9 +285,24 @@
 
         // Function to delete a student
         function deleteStudent(sid) {
-            // Implement your logic for deleting a student
-            // You may need to confirm the deletion and then send a DELETE request to the server
-        }
+            // Confirm the deletion with the user
+            const confirmDelete = confirm('Are you sure you want to delete this student?');
+
+            if (confirmDelete) {
+                // Make an Ajax request to delete the student
+                $.ajax({
+                    url: `http://localhost:8080/students/${sid}`, // Update the URL with your server's address
+                    method: 'DELETE',
+                    success: function (response) {
+                        // Refresh the student table after deletion
+                        fetchStudents();
+                    },
+                    error: function (error) {
+                        console.error('Error deleting student:', error);
+                    }
+                });
+            }
+      	}
     </script>
 </body>
 
