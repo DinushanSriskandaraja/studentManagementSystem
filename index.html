@@ -94,11 +94,11 @@
             background-color: rgb(141, 141, 214);
         }
         
-        @media (max-width: 1080px) {
+/*        @media (max-width: 1080px) {
             .container {
                 padding: 10px;
             }
-        }
+        }*/
     </style>
 </head>
 
@@ -150,7 +150,7 @@
                             <td>
                                 <!-- Example Subjects selection box -->
                                 <select id="Subject" class="form-control">
-                                        <option>Select Course</option>
+                                        <option>Select Subject</option>
                                         <option value="ETF">ETF</option>
                                         <option value="ORDBMS">ORDBMS</option>
                                         <option value="OOP">OOP</option>
@@ -165,7 +165,7 @@
                             </td>
                             <td>
                                 <button type="button" class="btn btn-primary" onclick="searchStudents()">Search</button>
-                                <button type="button" class="btn btn-primary" onclick="addOrUpdateStudent()" id="addOrUpdateBtn"></button>
+                                <button type="button" class="btn btn-primary" onclick="addOrUpdateStudent()" id="addOrUpdateBtn">ADD</button>
 
 
                             </td>
@@ -233,19 +233,19 @@
         // Call the fetchStudents function when the page loads
         $(document).ready(function() {
             fetchStudents();
-            updateButtonLabel();
+  //          updateButtonLabel();
         });
 
-        function updateButtonLabel() {
-            const sid = $('#SID').val();
-            const addButton = $('#addOrUpdateBtn');
+//        function updateButtonLabel() {
+    //const sid = $('#SID').val();
+            //const addButton = $('#addOrUpdateBtn');
 
-            if (sid) {
-                addButton.text('UPDATE');
-            } else {
-                addButton.text('ADD');
-            }
-        }
+            //if (sid) {
+             //   addButton.text('UPDATE');
+            //} else {
+          //      addButton.text('ADD');
+            //}
+        //}
 
         // Function to search students
         function searchStudents() {

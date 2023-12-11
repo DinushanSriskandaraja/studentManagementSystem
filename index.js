@@ -5,6 +5,7 @@
 
 
 var express = require('express');
+const nodemailer = require('nodemailer');
 var app = express();
 app.use(express.json());
 // const express = require('express');
@@ -174,6 +175,7 @@ app.post('/students', async(req, res) => {
         // Use index 0 to get the inserted document
         if (result && result.ops && result.ops.length > 0) {
             res.json(result.ops[0]);
+            sendEmailNotification(req.body.Email,req.body.FirstName)
         } else {
             res.status(500).json({ message: "Unexpected response from the database" });
         }
@@ -184,8 +186,24 @@ app.post('/students', async(req, res) => {
         // await client.close();
     }
 });
+
+// Function to send email notification
+function sendEmailNotification(Email,name) {
+
+    console.log(Email,name)
+    const mailOptions = {
+      from: 'sridinu03@gmail.com',
+      to: Email,
+      subject: 'Hi'+name,
+      text: `Hi ${name}, You have added to the student management system`
+    };
+  
+    // Use nodemailer to send the email
+    return transporter.sendMail(mailOptions);
+  }
+  
 // Update Student By SID
-app.put('/student/sid/:sid', async(req, res) => {
+app.put('/student/SID/:sid', async(req, res) => {
     try {
         await client.connect();
         console.log("Connected to MongoDB");
